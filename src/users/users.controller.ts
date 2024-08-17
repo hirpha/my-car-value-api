@@ -6,13 +6,15 @@ import {
   Param,
   Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { Seriaze } from 'src/interceptors/serialize.interceptor';
+import { UserResponse } from './dtos/user-response.dto';
 
 @Controller('auth')
+@Seriaze(UserResponse)
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -32,6 +34,7 @@ export class UsersController {
   }
   @Get('/get-users')
   getAllUsers() {
+    console.log('getAllUsers');
     return this.userService.getAllUsers();
   }
   @Patch('/:id')
