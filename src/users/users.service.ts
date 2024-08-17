@@ -40,6 +40,16 @@ export class UsersService {
     }
     return user;
   }
+
+  ///////////////////
+  /// find user by email
+  async findUserByEmail(email: string) {
+    const user = await this.repo.find({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    return user;
+  }
   ///////////////////
   /// update user
 

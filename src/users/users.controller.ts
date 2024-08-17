@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
@@ -32,6 +33,12 @@ export class UsersController {
   getUserById(@Param('id') id: string) {
     return this.userService.findUserById(parseInt(id));
   }
+
+  @Get('/:id')
+  getUserByEmail(@Query('email') email: string) {
+    return this.userService.findUserByEmail(email);
+  }
+
   @Get('/get-users')
   getAllUsers() {
     console.log('getAllUsers');
