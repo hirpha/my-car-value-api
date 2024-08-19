@@ -44,6 +44,7 @@ export class UsersService {
   ///////////////////
   /// find user by email
   async findUserByEmail(email: string) {
+    console.log('emamil', email);
     const user = await this.repo.find({ where: { email } });
     if (!user) {
       throw new NotFoundException('user not found');
