@@ -11,6 +11,7 @@ export class UsersService {
   /// create user
 
   async create(email: string, password: string) {
+    console.log('password ', password);
     const user = this.repo.create({ email, password });
 
     return await this.repo.save(user);
@@ -45,10 +46,7 @@ export class UsersService {
   /// find user by email
   async findUserByEmail(email: string) {
     console.log('emamil', email);
-    const user = await this.repo.find({ where: { email } });
-    if (!user) {
-      throw new NotFoundException('user not found');
-    }
+    const user = await this.repo.findOne({ where: { email } });
     return user;
   }
   ///////////////////

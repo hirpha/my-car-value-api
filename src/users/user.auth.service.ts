@@ -1,46 +1,51 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { PasswordService } from './password.service';
-
+@Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private passwordService: PasswordService,
-  ) {}
-
-  async signup(email: string, password: string) {
-    // see if email  is in use
-    const users = await this.userService.findUserByEmail(email);
-
-    if (users.length) {
-      throw new BadRequestException('user in use');
-    }
-
-    /// hash password
-
-    const hashPassword = await this.passwordService.hashPassword(password);
-
-    /// create user
-    const user = await this.userService.create(email, hashPassword);
-
-    return user;
+  ) {
+    console.log('auth service', this.userService);
   }
 
+  async signup(email: string, password: string) {
+    // see if email is in use'
 
-  async signin(email: string, password:string){
-      // see if email  is in use
-      const users = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findUserByEmail(email);
+    console.log('user', password);
+    if (user) {
+      throw new BadRequestException('Email is already in use');
+    }
 
-      if (users.length) {
-        throw new BadRequestException('user in use');
-      }
-      /// compare password 
+    // hash password
+    const hashPassword = await this.passwordService.hashPassword(password);
 
-      const checkPassword = await this.passwordService.comparePassword(password, users[0].password)
+    // create user
+    const newUser = await this.userService.create(email, hashPassword);
 
-      if(checkPassword === false){
-        throw new BadRequestException("User not found")
-      }
-      return users[0];
+    return newUser;
+  }
+
+  async signin(email: string, password: string) {
+    // see if email exists
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    // compare password
+    const checkPassword = await this.passwordService.comparePassword(
+      password,
+      user.password,
+    );
+
+    if (!checkPassword) {
+      throw new BadRequestException('Invalid password');
+    }
+
+    return user;
   }
 }

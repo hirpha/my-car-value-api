@@ -7,12 +7,20 @@ export class PasswordService {
 
   // Method to hash a password
   async hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(this.saltRounds);
-    return bcrypt.hash(password, salt);
+    try {
+      const salt = await bcrypt.genSalt(this.saltRounds);
+      return bcrypt.hash(password, salt);
+    } catch (error) {
+      throw new Error('Failed to hash password');
+    }
   }
 
   // Method to compare a password with a hash
   async comparePassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    try {
+      return bcrypt.compare(password, hash);
+    } catch (error) {
+      throw new Error('Failed to compare passwords');
+    }
   }
 }
